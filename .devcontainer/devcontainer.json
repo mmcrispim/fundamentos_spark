@@ -1,0 +1,21 @@
+{
+    "name": "Fundamentos Spark Container",
+    "dockerComposeFile": [
+        "docker-compose.yml"
+    ],
+    "service": "spark-master",
+    "workspaceFolder": "/apps",
+    "remoteUser": "vscode",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.azure-repos",
+                "vscodevim.vim",
+                "ms-python.python",
+                "ms-python.isort",
+                "ms-python.black-formatter"
+            ]
+        }
+    },
+    "postCreateCommand": "poetry install"
+}
