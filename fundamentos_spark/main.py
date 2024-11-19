@@ -15,6 +15,7 @@ def main():
     # load data
     print("Lendo o arquivo e criando o df_device")
     df_device = spark.read.json("/workspace/Files/device_part_1.json")
+    
     print("Leu o arquivo e criou o df_device")
     df_device.show()
     
