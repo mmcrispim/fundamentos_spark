@@ -1,0 +1,47 @@
+[
+    {
+        "id": 11,
+        "uid": "o1p2q3r4",
+        "build_number": "20240001",
+        "manufacturer": "Apple",
+        "model": "MacBook Pro 16",
+        "platform": "macOS",
+        "serial_number": "SN12348765"
+    },
+    {
+        "id": 12,
+        "uid": "s5t6u7v8",
+        "build_number": "303202",
+        "manufacturer": "Dell",
+        "model": "XPS 13",
+        "platform": "Windows",
+        "serial_number": "SN87651234"
+    },
+    {
+        "id": 13,
+        "uid": "w9x0y1z2",
+        "build_number": "2023AB",
+        "manufacturer": "Lenovo",
+        "model": "ThinkPad X1 Carbon",
+        "platform": "Windows",
+        "serial_number": "SN55661234"
+    },
+    {
+        "id": 14,
+        "uid": "a3b4c5d6",
+        "build_number": "789654",
+        "manufacturer": "Google",
+        "model": "Pixelbook Go",
+        "platform": "ChromeOS",
+        "serial_number": "SN23455677"
+    },
+    {
+        "id": 15,
+        "uid": "e7f8g9h0",
+        "build_number": "900123",
+        "manufacturer": "Microsoft",
+        "model": "Surface Pro 8",
+        "platform": "Windows",
+        "serial_number": "SN11223355"
+    }
+]

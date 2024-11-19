@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "uid": "a1b2c3d4",
+        "build_number": "20240101",
+        "manufacturer": "Apple",
+        "model": "iPhone 13",
+        "platform": "iOS",
+        "serial_number": "SN12345678"
+    },
+    {
+        "id": 2,
+        "uid": "e5f6g7h8",
+        "build_number": "210123",
+        "manufacturer": "Samsung",
+        "model": "Galaxy S22",
+        "platform": "Android",
+        "serial_number": "SN87654321"
+    },
+    {
+        "id": 3,
+        "uid": "i9j0k1l2",
+        "build_number": "300456",
+        "manufacturer": "Google",
+        "model": "Pixel 6",
+        "platform": "Android",
+        "serial_number": "SN11223344"
+    },
+    {
+        "id": 4,
+        "uid": "m3n4o5p6",
+        "build_number": "123456",
+        "manufacturer": "Apple",
+        "model": "iPad Air",
+        "platform": "iOS",
+        "serial_number": "SN55667788"
+    },
+    {
+        "id": 5,
+        "uid": "q7r8s9t0",
+        "build_number": "789123",
+        "manufacturer": "OnePlus",
+        "model": "OnePlus 9",
+        "platform": "Android",
+        "serial_number": "SN99887766"
+    }
+]

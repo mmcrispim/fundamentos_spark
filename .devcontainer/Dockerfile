@@ -1,7 +1,14 @@
 # Cria Imagem PySpark
 
 # Imagem do SO usada como base
-FROM python:3.11-bullseye as spark-base
+FROM python:3.12-bullseye as spark-base
+
+# Cria o usuário 'vscode' e o adiciona ao sudoers
+RUN useradd -ms /bin/bash vscode && \
+    mkdir -p /etc/sudoers.d && \
+    echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/vscode
+
+USER root
 
 # Atualiza o SO e instala pacotes
 RUN apt-get update && \
@@ -15,23 +22,23 @@ RUN apt-get update && \
       openjdk-11-jdk \
       build-essential \
       software-properties-common \
-      ssh && \
+      ssh \
+      cmake \
+      libboost-dev \
+      libboost-filesystem-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Variáveis de ambiente
+# Instalar o Poetry
+#RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# Variaveis de ambiente
 ENV SPARK_HOME=${SPARK_HOME:-"/opt/spark"}
 ENV HADOOP_HOME=${HADOOP_HOME:-"/opt/hadoop"}
 
-# Instalar o Poetry
-RUN curl -sSL https://install.python-poetry.org | python3 -
-
-# Adicionar o Poetry ao PATH
-ENV PATH="/root/.local/bin:$PATH"
-
 # Cria as pastas
-RUN mkdir -p ${HADOOP_HOME} && mkdir -p ${SPARK_HOME}
-WORKDIR ${SPARK_HOME}
+WORKDIR /opt/spark/app
+COPY . /opt/spark/app
 
 # Download do arquivo de binários do Spark
 RUN curl https://archive.apache.org/dist/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3.tgz -o spark-3.5.0-bin-hadoop3.tgz \
@@ -45,16 +52,6 @@ FROM spark-base as pyspark
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
-# Copiar o pyproject.toml e o poetry.lock para o container
-COPY pyproject.toml /app/
-COPY poetry.lock /app/
-
-# Instalar dependências do Poetry
-RUN pip install poetry && poetry install
-
-# Copiar os arquivos do projeto para o container
-COPY . /app
-
 # Mais variáveis de ambiente
 ENV PATH="/opt/spark/sbin:/opt/spark/bin:${PATH}"
 ENV SPARK_HOME="/opt/spark"
@@ -67,10 +64,6 @@ ENV PYSPARK_PYTHON python3
 COPY conf/spark-defaults.conf "$SPARK_HOME/conf"
 COPY conf/log4j2.properties "$SPARK_HOME/conf"
 
-# Cria um usuário vscode para usar no container
-RUN useradd -ms /bin/bash vscode
-USER vscode
-
 # Permissões
 RUN chmod u+x /opt/spark/sbin/* && \
     chmod u+x /opt/spark/bin/*
@@ -79,12 +72,13 @@ RUN chmod u+x /opt/spark/sbin/* && \
 ENV PYTHONPATH=$SPARK_HOME/python/:$PYTHONPATH
 
 # Copia o script de inicialização dos serviços para a imagem
-USER root
 COPY entrypoint.sh .
 
 # Ajusta o privilégio
-USER root
 RUN chmod +x entrypoint.sh
+
+# Troca para o usuário 'vscode' para os próximos comandos (opcional, se necessário)
+USER vscode
 
 # Executa o script quando inicializar um container
 ENTRYPOINT ["./entrypoint.sh"]

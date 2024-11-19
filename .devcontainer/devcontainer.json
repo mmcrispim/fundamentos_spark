@@ -4,7 +4,7 @@
         "docker-compose.yml"
     ],
     "service": "spark-master",
-    "workspaceFolder": "/apps",
+    "workspaceFolder": "/workspace",
     "remoteUser": "vscode",
     "customizations": {
         "vscode": {
@@ -16,6 +16,5 @@
                 "ms-python.black-formatter"
             ]
         }
-    },
-    "postCreateCommand": "poetry install"
+    }
 }

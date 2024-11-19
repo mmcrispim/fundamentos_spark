@@ -1,90 +1,39 @@
-# Cria Imagem PySpark
+version: '3.8'
+name: fundamentos-spark-cluster
 
-# Imagem do SO usada como base
-FROM python:3.11-bullseye as spark-base
+services:
+  spark-master:
+    container_name: fundamentos-spark-master
+    build: .
+    image: fundamentos-spark-image
+    entrypoint: ['./entrypoint.sh', 'master']
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    volumes:
+      - ../:/workspace
+      - spark-logs:/opt/spark/spark-events
+      - ./spark-events:/opt/spark/spark-events
+    env_file:
+      - .env.spark
+    ports:
+      - '9091:8080'
+      - '7071:7077'
 
-# Atualiza o SO e instala pacotes
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      sudo \
-      curl \
-      vim \
-      nano \
-      unzip \
-      rsync \
-      openjdk-11-jdk \
-      build-essential \
-      software-properties-common \
-      ssh && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+  spark-history-server:
+    container_name: fundamentos-spark-history
+    image: fundamentos-spark-image
+    entrypoint: ['./entrypoint.sh', 'history']
+    depends_on:
+      - spark-master
+    env_file:
+      - .env.spark
+    volumes:
+      - spark-logs:/opt/spark/spark-events
+    ports:
+      - '18081:18080'
 
-# Variáveis de ambiente
-ENV SPARK_HOME=${SPARK_HOME:-"/opt/spark"}
-ENV HADOOP_HOME=${HADOOP_HOME:-"/opt/hadoop"}
-
-# Instalar o Poetry
-RUN curl -sSL https://install.python-poetry.org | python3 -
-
-# Adicionar o Poetry ao PATH
-ENV PATH="/root/.local/bin:$PATH"
-
-# Cria as pastas
-RUN mkdir -p ${HADOOP_HOME} && mkdir -p ${SPARK_HOME}
-WORKDIR ${SPARK_HOME}
-
-# Download do arquivo de binários do Spark
-RUN curl https://archive.apache.org/dist/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3.tgz -o spark-3.5.0-bin-hadoop3.tgz \
- && tar xvzf spark-3.5.0-bin-hadoop3.tgz --directory /opt/spark --strip-components 1 \
- && rm -rf spark-3.5.0-bin-hadoop3.tgz
-
-# Prepara o ambiente com PySpark
-FROM spark-base as pyspark
-
-# Instala as dependências Python
-COPY requirements.txt .
-RUN pip3 install -r requirements.txt
-
-# Copiar o pyproject.toml e o poetry.lock para o container
-COPY pyproject.toml /app/
-COPY poetry.lock /app/
-
-# Instalar dependências do Poetry
-RUN pip install poetry && poetry install
-
-# Copiar os arquivos do projeto para o container
-COPY . /app
-
-# Mais variáveis de ambiente
-ENV PATH="/opt/spark/sbin:/opt/spark/bin:${PATH}"
-ENV SPARK_HOME="/opt/spark"
-ENV SPARK_MASTER="spark://spark-master:7077"
-ENV SPARK_MASTER_HOST spark-master
-ENV SPARK_MASTER_PORT 7077
-ENV PYSPARK_PYTHON python3
-
-# Copia o arquivo de configuração do Spark para a imagem
-COPY conf/spark-defaults.conf "$SPARK_HOME/conf"
-COPY conf/log4j2.properties "$SPARK_HOME/conf"
-
-# Cria um usuário vscode para usar no container
-RUN useradd -ms /bin/bash vscode
-USER vscode
-
-# Permissões
-RUN chmod u+x /opt/spark/sbin/* && \
-    chmod u+x /opt/spark/bin/*
-
-# Variável PYTHONPATH
-ENV PYTHONPATH=$SPARK_HOME/python/:$PYTHONPATH
-
-# Copia o script de inicialização dos serviços para a imagem
-USER root
-COPY entrypoint.sh .
-
-# Ajusta o privilégio
-USER root
-RUN chmod +x entrypoint.sh
-
-# Executa o script quando inicializar um container
-ENTRYPOINT ["./entrypoint.sh"]
+volumes:
+  spark-logs:

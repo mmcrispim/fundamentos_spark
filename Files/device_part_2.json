@@ -1,0 +1,47 @@
+[
+    {
+        "id": 6,
+        "uid": "u1v2w3x4",
+        "build_number": "456789",
+        "manufacturer": "Sony",
+        "model": "Xperia 5",
+        "platform": "Android",
+        "serial_number": "SN44556677"
+    },
+    {
+        "id": 7,
+        "uid": "y5z6a7b8",
+        "build_number": "654321",
+        "manufacturer": "Huawei",
+        "model": "P50 Pro",
+        "platform": "Android",
+        "serial_number": "SN22334455"
+    },
+    {
+        "id": 8,
+        "uid": "c9d0e1f2",
+        "build_number": "987654",
+        "manufacturer": "Apple",
+        "model": "iPhone 12 Mini",
+        "platform": "iOS",
+        "serial_number": "SN33445566"
+    },
+    {
+        "id": 9,
+        "uid": "g3h4i5j6",
+        "build_number": "123789",
+        "manufacturer": "Samsung",
+        "model": "Galaxy Note 20",
+        "platform": "Android",
+        "serial_number": "SN66778899"
+    },
+    {
+        "id": 10,
+        "uid": "k7l8m9n0",
+        "build_number": "456123",
+        "manufacturer": "Xiaomi",
+        "model": "Mi 11 Ultra",
+        "platform": "Android",
+        "serial_number": "SN77889900"
+    }
+]
